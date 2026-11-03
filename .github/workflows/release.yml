@@ -1,0 +1,37 @@
+name: Build and release
+
+# Pushing a tag like v1.0.0 builds the Windows executable and attaches it to a GitHub release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build executable
+        run: |
+          python -m pip install pyinstaller
+          python -m PyInstaller --noconfirm --onefile --windowed --name "FNV Radio Generator" --distpath dist --workpath build --specpath build "FNV Radio Generator.pyw"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FNV-Radio-Generator
+          path: dist/FNV Radio Generator.exe
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/FNV Radio Generator.exe
+          generate_release_notes: true

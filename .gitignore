@@ -1,0 +1,18 @@
+# Game files extracted from the user's own copy: never commit them
+library/
+output/
+test/
+
+# Local settings
+settings.json
+
+# Build
+build/
+dist/
+.venv-build/
+*.exe
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
